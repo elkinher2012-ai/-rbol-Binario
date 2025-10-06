@@ -1,3 +1,221 @@
+# 🌳 Árbol Binario en Java
+
+## 🧠 ¿Qué es un Árbol Binario?
+
+Un **árbol binario** es una estructura de datos donde cada elemento (llamado **nodo**) puede tener **hasta dos hijos**: uno a la izquierda y otro a la derecha.  
+Sirve para **organizar información** de forma jerárquica, lo que permite buscar, insertar y recorrer datos de manera eficiente.
+
+En un **árbol binario de búsqueda**, los valores **menores** se guardan a la **izquierda** y los **mayores** a la **derecha**.
+
+Ejemplo visual:
+
+```
+      8
+     / \
+    3   10
+   / \
+  1   6
+```
+
+---
+
+## ⚙️ ¿Cómo se implementó?
+
+Este programa en **Java** construye un **árbol binario de búsqueda simple** usando tres clases en un único archivo `Main.java`:
+
+- **Nodo** → Representa un número dentro del árbol.  
+- **ArbolBinario** → Contiene los métodos para:
+  - Insertar nuevos números.
+  - Mostrar los datos en orden ascendente (recorrido inorden).
+  - Buscar un número dentro del árbol.
+- **Main** → Muestra un **menú interactivo en consola** para que el usuario elija qué hacer.
+
+El recorrido **inorden** se usa porque muestra los valores **ordenados de menor a mayor**.
+
+---
+
+## 💻 Código (Main.java)
+
+Copia todo esto en un archivo llamado `Main.java` y compílalo con `javac Main.java`.
+
+```java
+import java.util.Scanner;
+
+// Clase Nodo del árbol
+class Nodo {
+    int valor;
+    Nodo izquierda, derecha;
+
+    public Nodo(int valor) {
+        this.valor = valor;
+        izquierda = derecha = null;
+    }
+}
+
+// Clase Árbol Binario
+class ArbolBinario {
+    Nodo raiz;
+
+    // Insertar un valor en el árbol
+    public void insertar(int valor) {
+        raiz = insertarRec(raiz, valor);
+    }
+
+    private Nodo insertarRec(Nodo nodo, int valor) {
+        if (nodo == null) {
+            nodo = new Nodo(valor);
+            return nodo;
+        }
+        if (valor < nodo.valor) {
+            nodo.izquierda = insertarRec(nodo.izquierda, valor);
+        } else if (valor > nodo.valor) {
+            nodo.derecha = insertarRec(nodo.derecha, valor);
+        } // si es igual, no lo inserta (para evitar duplicados)
+        return nodo;
+    }
+
+    // Mostrar recorrido inorden
+    public void mostrarInorden() {
+        System.out.print("Recorrido inorden: ");
+        inordenRec(raiz);
+        System.out.println();
+    }
+
+    private void inordenRec(Nodo nodo) {
+        if (nodo != null) {
+            inordenRec(nodo.izquierda);
+            System.out.print(nodo.valor + " ");
+            inordenRec(nodo.derecha);
+        }
+    }
+
+    // Buscar un valor en el árbol
+    public boolean buscar(int valor) {
+        return buscarRec(raiz, valor);
+    }
+
+    private boolean buscarRec(Nodo nodo, int valor) {
+        if (nodo == null)
+            return false;
+        if (nodo.valor == valor)
+            return true;
+        if (valor < nodo.valor)
+            return buscarRec(nodo.izquierda, valor);
+        else
+            return buscarRec(nodo.derecha, valor);
+    }
+}
+
+// Clase principal con el menú
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ArbolBinario arbol = new ArbolBinario();
+        int opcion = 0, numero;
+
+        do {
+            System.out.println("\n=== MENÚ ÁRBOL BINARIO ===");
+            System.out.println("1. Insertar número");
+            System.out.println("2. Mostrar recorrido inorden");
+            System.out.println("3. Buscar número");
+            System.out.println("4. Salir");
+            System.out.print("Seleccione una opción: ");
+            if (!sc.hasNextInt()) {
+                sc.next(); // limpiar entrada inválida
+                System.out.println("Entrada no válida. Intente con un número.");
+                continue;
+            }
+            opcion = sc.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("Ingrese el número a insertar: ");
+                    if (sc.hasNextInt()) {
+                        numero = sc.nextInt();
+                        arbol.insertar(numero);
+                        System.out.println("Número insertado correctamente.");
+                    } else {
+                        sc.next();
+                        System.out.println("Entrada no válida. Debe ingresar un número entero.");
+                    }
+                    break;
+
+                case 2:
+                    arbol.mostrarInorden();
+                    break;
+
+                case 3:
+                    System.out.print("Ingrese el número a buscar: ");
+                    if (sc.hasNextInt()) {
+                        numero = sc.nextInt();
+                        if (arbol.buscar(numero)) {
+                            System.out.println("✅ El número " + numero + " SÍ existe en el árbol.");
+                        } else {
+                            System.out.println("❌ El número " + numero + " NO existe en el árbol.");
+                        }
+                    } else {
+                        sc.next();
+                        System.out.println("Entrada no válida. Debe ingresar un número entero.");
+                    }
+                    break;
+
+                case 4:
+                    System.out.println("Saliendo del programa...");
+                    break;
+
+                default:
+                    System.out.println("Opción no válida. Intente nuevamente.");
+            }
+
+        } while (opcion != 4);
+
+        sc.close();
+    }
+}
+```
+
+---
+
+## 💻 Ejemplo de ejecución en consola
+
+### 📋 Menú principal
+```
+=== MENÚ ÁRBOL BINARIO ===
+1. Insertar número
+2. Mostrar recorrido inorden
+3. Buscar número
+4. Salir
+```
+![Ejecución del menú](img/ejecucion_menu.png)
+
+### 🌱 Insertar números
+```
+Ingrese el número a insertar: 8
+Número insertado correctamente.
+
+Ingrese el número a insertar: 3
+Número insertado correctamente.
+
+Ingrese el número a insertar: 10
+Número insertado correctamente.
+```
+![Inserción de números](img/ejecucion_insertar.png)
+
+### 🔢 Mostrar recorrido inorden
+```
+Recorrido inorden: 3 8 10
+```
+![Recorrido inorden](img/ejecucion_inorden.png)
+
+### 🔍 Buscar número
+```
+Ingrese el número a buscar: 10
+✅ El número 10 SÍ existe en el árbol.
+```
+![Búsqueda de número](img/ejecucion_buscar.png)
+
+---
+---------------------------------------------------------------
 import java.util.Scanner;
 
 // Clase Nodo del árbol
